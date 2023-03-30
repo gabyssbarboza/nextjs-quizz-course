@@ -1,0 +1,74 @@
+.answer {
+  display: flex;
+  height: 100px;
+  margin: 10px;
+  width: 80%;
+  min-width: 500px;
+}
+
+.answerContent {
+  display: flex;
+  position: relative;
+  flex: 1;
+}
+
+.answerCardFront,
+.answerCardBack {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+.answerCardFront {
+  background-color: #fff;
+  color: #000;
+  align-items: center;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.letter {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-right: 20px;
+  color: #ffff;
+}
+
+.values {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.answerCardBack > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  border-radius: 12px;
+}
+
+.rigthAnswer {
+  background-color: #2baa6d;
+}
+
+.rigthAnswer .txtAnswer {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.wrongAnswer {
+  background-color: #e44a4c;
+}
+
+.wrongAnswer .txtAnswer {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
