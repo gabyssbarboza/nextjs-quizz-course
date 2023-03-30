@@ -12,9 +12,32 @@ const tstMock: MakeQuestion = new MakeQuestion(1, "Melhor Cor", [
   MakeAnswer.right("Vermelho"),
 ]);
 
+const BASE_URL = "http://localhost:3000/api";
+
 export default function Home() {
-  const [question, setQuestion] = useState(tstMock);
+  const [ids, setIds] = useState([]);
+  const [question, setQuestion] = useState<MakeQuestion>(tstMock);
   const questionRef = useRef<MakeQuestion>();
+
+  async function loadingQuestionsIds() {
+    const res = await fetch(`${BASE_URL}/survey`);
+    const questionIds = await res.json();
+    setIds(questionIds);
+  }
+
+  async function loadingQuestionsById(questionId: number) {
+    const res = await fetch(`${BASE_URL}/questions/${questionId}`);
+    const json = await res.json();
+    console.log("question json", json);
+  }
+
+  useEffect(() => {
+    loadingQuestionsIds();
+  }, []);
+
+  useEffect(() => {
+    ids.length > 0 && loadingQuestionsById(ids[0]);
+  }, [ids]);
 
   useEffect(() => {
     questionRef.current = question;
@@ -37,22 +60,11 @@ export default function Home() {
   function onAnsweredEvent() {}
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        gap: "40px",
-      }}
-    >
-      <Quizz
-        question={question}
-        answeredEvent={onAnsweredEvent}
-        lastQuestion={true}
-        gotToNextStep={gotToNextStep}
-      />
-    </div>
+    <Quizz
+      question={question}
+      answeredEvent={onAnsweredEvent}
+      lastQuestion={true}
+      gotToNextStep={gotToNextStep}
+    />
   );
 }
