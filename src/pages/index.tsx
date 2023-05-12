@@ -1,34 +1,32 @@
-import Button from "@/components/Button";
-import Question from "@/components/Question";
 import Quizz from "@/components/Quizz";
-import MakeAnswer from "@/model/MakeAnswer";
-import MakeQuestion from "@/model/MakeQuestion";
-import { useEffect, useRef, useState } from "react";
 
-const tstMock: MakeQuestion = new MakeQuestion(1, "Melhor Cor", [
-  MakeAnswer.wrong("Verde"),
-  MakeAnswer.wrong("Azul"),
-  MakeAnswer.wrong("Roxo"),
-  MakeAnswer.right("Vermelho"),
-]);
+import MakeQuestion from "@/model/MakeQuestion";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 
 const BASE_URL = "http://localhost:3000/api";
 
 export default function Home() {
-  const [ids, setIds] = useState([]);
-  const [question, setQuestion] = useState<MakeQuestion>(tstMock);
-  const questionRef = useRef<MakeQuestion>();
+  const router = useRouter();
+
+  const [ids, setIds] = useState<number[]>([]);
+  const [question, setQuestion] = useState<MakeQuestion>();
+  const [rigth, setRigth] = useState<number>(0);
 
   async function loadingQuestionsIds() {
     const res = await fetch(`${BASE_URL}/survey`);
     const questionIds = await res.json();
+    console.log(questionIds, "questionidsss");
     setIds(questionIds);
   }
 
   async function loadingQuestionsById(questionId: number) {
     const res = await fetch(`${BASE_URL}/questions/${questionId}`);
     const json = await res.json();
-    console.log("question json", json);
+    console.log(json, "jsoon");
+    const newQuestion = MakeQuestion.createFromObject(json);
+    setQuestion(newQuestion);
+    console.log(MakeQuestion.createFromObject(json));
   }
 
   useEffect(() => {
@@ -39,32 +37,48 @@ export default function Home() {
     ids.length > 0 && loadingQuestionsById(ids[0]);
   }, [ids]);
 
-  useEffect(() => {
-    questionRef.current = question;
-  }, [question]);
-
-  function onUseAnswer(i: number) {
-    setQuestion(question.answeredWith(i));
-    console.log(question);
-    console.log(i);
-  }
-
-  function onTimeOver() {
-    if (question.isQuestionNotAnswered && questionRef.current) {
-      setQuestion(questionRef.current.answeredWith(-1));
+  function nextQuestionId() {
+    if (question) {
+      const nextID = ids.indexOf(question.id) + 1;
+      return ids[nextID];
     }
   }
 
-  function gotToNextStep() {}
+  function goToNextStep() {
+    if (question) {
+      const newId = nextQuestionId();
+      newId ? gotToNextQuestion(newId) : finishTheQuizz();
+    }
+  }
 
-  function onAnsweredEvent() {}
+  function gotToNextQuestion(newId: number) {
+    loadingQuestionsById(newId);
+  }
+
+  function finishTheQuizz() {
+    router.push({
+      pathname: "/results",
+      query: {
+        total: ids.length,
+        corrects: rigth,
+      },
+    });
+  }
+
+  function onAnsweredEvent(answeredQustion: MakeQuestion) {
+    setQuestion(answeredQustion);
+    const isAns = answeredQustion.isRight;
+    setRigth(rigth + (isAns ? 1 : 0));
+  }
 
   return (
-    <Quizz
-      question={question}
-      answeredEvent={onAnsweredEvent}
-      lastQuestion={true}
-      gotToNextStep={gotToNextStep}
-    />
+    <>
+      <Quizz
+        question={question}
+        answeredEvent={onAnsweredEvent}
+        lastQuestion={nextQuestionId() === undefined}
+        gotToNextStep={goToNextStep}
+      />
+    </>
   );
 }

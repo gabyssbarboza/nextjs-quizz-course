@@ -32,13 +32,16 @@ const letters = [
 ];
 
 const Question = (props: QuestionProps) => {
-  const { message, id, answer } = props.value;
+  const question = props.value;
 
   function renderAnswers() {
-    return answer.map((ans, i) => {
+    console.log("hhhhh", "question", question);
+
+    return question?.answer?.map((ans, i) => {
+      console.log(ans, "aisiajsiajsj");
       return (
         <Answers
-          key={i}
+          key={`${question.id}-${i}`}
           value={ans}
           index={i}
           letter={letters[i].value}
@@ -51,11 +54,13 @@ const Question = (props: QuestionProps) => {
 
   return (
     <div className={styles.question}>
-      <QuestionMessage txt={message} />
+      <QuestionMessage txt={question.message} />
       <Countdown
+        key={question.id}
         duraction={props.timeForResponse ?? 10}
         timeOver={props.timeOver}
       />
+
       {renderAnswers()}
     </div>
   );

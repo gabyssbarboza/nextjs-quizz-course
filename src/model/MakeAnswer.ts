@@ -35,6 +35,10 @@ export default class MakeAnswer {
     return new MakeAnswer(this.#value, this.#isOk, true);
   }
 
+  static createFromObject(model: MakeAnswer): MakeAnswer {
+    return new MakeAnswer(model.value, model.isOk, model.isRevealed);
+  }
+
   convertToObject() {
     return {
       value: this.#value,

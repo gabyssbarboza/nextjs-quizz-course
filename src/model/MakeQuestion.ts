@@ -60,6 +60,15 @@ export default class MakeQuestion {
     return new MakeQuestion(this.#id, this.#message, ranAnswer, this.#isRight);
   }
 
+  static createFromObject(model: any) {
+    console.log("the model", model);
+    const res = model?.answers?.map((resp: any) =>
+      MakeAnswer.createFromObject(resp)
+    );
+    console.log(res, "rwendr");
+    return new MakeQuestion(model.id, model.message, res, model.isRight);
+  }
+
   toLiteralObject() {
     return {
       id: this.#id,

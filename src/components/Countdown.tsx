@@ -4,6 +4,7 @@ import styles from "../styles/Countdown.module.css";
 interface CountdownProps {
   duraction: number;
   timeOver: () => void;
+  key: number;
 }
 
 export const Countdown = (props: CountdownProps) => {

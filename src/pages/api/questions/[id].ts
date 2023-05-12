@@ -10,8 +10,8 @@ export default function handler(req: any, res: any) {
 
   if (isThereQuestionOrNot.length === 1) {
     const selectedQuestion = isThereQuestionOrNot[0].randomAnswers();
-    const obj = selectedQuestion.answeredWith(0).toLiteralObject();
-    res.status(200).json(obj);
+
+    res.status(200).json(selectedQuestion.toLiteralObject());
   } else {
     res.status(204).send();
   }
