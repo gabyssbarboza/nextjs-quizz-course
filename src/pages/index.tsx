@@ -73,12 +73,14 @@ export default function Home() {
 
   return (
     <>
-      <Quizz
-        question={question}
-        answeredEvent={onAnsweredEvent}
-        lastQuestion={nextQuestionId() === undefined}
-        gotToNextStep={goToNextStep}
-      />
+      {question && (
+        <Quizz
+          question={question}
+          answeredEvent={onAnsweredEvent}
+          lastQuestion={nextQuestionId() === undefined}
+          gotToNextStep={goToNextStep}
+        />
+      )}
     </>
   );
 }
